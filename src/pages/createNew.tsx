@@ -3,6 +3,8 @@ import Lolly from "../components/lolly"
 import Header from "../components/header"
 import { navigate } from "gatsby"
 import { useQuery, useMutation, gql } from "@apollo/client"
+import { useFormik } from "formik"
+import * as Yup from "yup"
 
 const GETDATA = gql`
   {
@@ -36,26 +38,45 @@ export default function CreateNew() {
   const [colorTop, setcolorTop] = useState("#d52368")
   const [colorBot, setcolorBot] = useState("#deaa10")
   const [colorMid, setcolorMid] = useState("#e95946")
-  const RecNameRef = useRef(null)
-  const SenderNameRef = useRef(null)
-  const msgRef = useRef(null)
 
-  const submitLollyForm = async () => {
-    console.log("dpp")
 
-    const result = await createLolly({
-      variables: {
-        recipientName: RecNameRef.current.value,
-        sendersName: SenderNameRef.current.value,
-        message: msgRef.current.value,
-        flavorTop: colorTop,
-        flavorMid: colorMid,
-        flavorBot: colorBot,
-      },
-    })
+  const formik = useFormik({
+    initialValues: {
+      recName: "",
+      sendersName: "",
+      message: "",
+    },
+    validationSchema: Yup.object({
+      recName: Yup.string().required("Required"),
+      sendersName: Yup.string().required("Required"),
+      message: Yup.string().required("Required"),
+    }),
+    onSubmit: values => {
+     //console.log(values)
 
-    console.log(result)
-  }
+     const submitLollyForm = async () => {
+      console.log("dpp")
+  
+      const result = await createLolly({
+        variables: {
+          recipientName: values.recName,
+          sendersName: values.sendersName,
+          message: values.message,
+          flavorTop: colorTop,
+          flavorMid: colorMid,
+          flavorBot: colorBot,
+        },
+      })
+  
+      console.log(result)
+    }
+
+    submitLollyForm();
+    
+    },
+  })
+
+ 
 
   const { loading, error, data } = useQuery(GETDATA)
   const [createLolly] = useMutation(createLollyMutation)
@@ -86,7 +107,7 @@ export default function CreateNew() {
                 }}
               ></input>
             </label>
-            
+
             <label htmlFor="midFlavor" className="colorPickerLabel">
               <input
                 className="colorPicker"
@@ -115,23 +136,64 @@ export default function CreateNew() {
           </div>
         </div>
 
-        <div className = "formContainer">
-          <label className = "formLabel" htmlFor="sendName">To: </label>
-          <input className = "inputText"
+        <form  onSubmit={formik.handleSubmit} className="formContainer">
+          <label className="formLabel" htmlFor="sendName">
+            To:  
+          </label>
+          <div className = "formErrors" >{formik.errors.recName && formik.touched.recName
+                        ? formik.errors.recName
+                        : null}
+          </div>
+          <input
+            className="inputText"
             type="text"
-            name="sendName"
-            id="sendName"
-            ref={SenderNameRef}
+            name="recName"
+            id="recName"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            
+          />
+        
+
+          <label className="formLabel" htmlFor="msg">
+            Message:{" "}
+          </label>
+          <div className = "formErrors">{formik.errors.message && formik.touched.message
+                        ? formik.errors.message
+                        : null}
+          </div>
+          <textarea
+            id = "message"
+            name = "message"
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
+            className="inputTextBox"
+            cols={30}
+            rows={15}
           />
 
-          <label  className = "formLabel" htmlFor="msg">Message: </label>
-          <textarea  className = "inputTextBox" cols={30} rows={15} ref={msgRef} />
-
-          <label  className = "formLabel" htmlFor="Recname"> From: </label>
-          <input className = "inputText" type="text" name="Recname" id="Recname" ref={RecNameRef} />
-          <input className = "submitButton" onClick={submitLollyForm} type="button" value="Send"></input>
-
-        </div>
+          <label className="formLabel" htmlFor="Recname">
+            {" "}
+            From:{" "}
+          </label>
+          <div className = "formErrors">{formik.errors.sendersName && formik.touched.sendersName
+                        ? formik.errors.sendersName
+                        : null}
+          </div>
+          <input
+            onBlur={formik.handleBlur}
+            onChange={formik.handleChange}
+            className="inputText"
+            type="text"
+            name="sendersName"
+            id="sendersName"
+          />
+      
+          <button
+            className="submitButton"
+            type="submit"
+          >Send</button>
+        </form>
       </div>
     </div>
   )

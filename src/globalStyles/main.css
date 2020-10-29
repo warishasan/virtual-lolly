@@ -155,3 +155,9 @@ body {
 .submitButton:hover{
     background-color: rgba(240, 47, 159, 0.4);
 }
+
+.formErrors{
+    color: red;
+    text-align: left;
+    margin-bottom: 0.4rem;
+}
