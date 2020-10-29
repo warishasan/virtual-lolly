@@ -2,6 +2,8 @@ const { ApolloServer, gql } = require('apollo-server-lambda')
 
 const faunadb = require("faunadb");
 const shortid = require("shortid");
+const axios = require('axios');
+
 const q = faunadb.query;
 
 var client = new faunadb.Client({
