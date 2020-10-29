@@ -1,10 +1,15 @@
 import React from "react"
 
-export default function Header() {
+export interface props{
+  mainHeadingText: string
+  secondaryHeadingText: string
+}
+
+export default function Header(props:props) {
   return (
     <div className = "headerContainer">
-      <h1>Kuch Meetha Hojaye?</h1>
-      <h3>Aoo Khushiyaan Baantain...</h3>
+      <h1>{props.mainHeadingText}</h1>
+      <h3>{props.secondaryHeadingText}</h3>
     </div>
   )
 }

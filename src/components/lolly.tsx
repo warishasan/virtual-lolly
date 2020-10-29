@@ -1,10 +1,10 @@
 import React from "react"
 
-interface props{
-    lollyTop: string
-    lollyMid: string
-    lollyBot: string
-    style: string
+export interface props{
+    lollyTop?: string
+    lollyMid?: string
+    lollyBot?: string
+    style?: string
 }
 
 export default function Lolly(props:props) {
@@ -48,3 +48,5 @@ export default function Lolly(props:props) {
         </div>
   )
 }
+
+Lolly.defaultProps = {lollyTop : "#d52368", lollyMid : "#e95946", lollyBot : "#deaa10" }

@@ -5,12 +5,9 @@ import { navigate } from "gatsby"
 import { useQuery, useMutation, gql } from "@apollo/client"
 import { useFormik } from "formik"
 import * as Yup from "yup"
+import LollyColorChanger from '../components/lollyColorChanger'
 
-const GETDATA = gql`
-  {
-    hello
-  }
-`
+
 const createLollyMutation = gql`
   mutation createLolly(
     $recipientName: String!
@@ -47,8 +44,12 @@ export default function CreateNew() {
       message: "",
     },
     validationSchema: Yup.object({
-      recName: Yup.string().required("Required"),
-      sendersName: Yup.string().required("Required"),
+      recName: Yup.string().required("Required") 
+      .max(15, 'Must be 15 characters or less')
+      ,
+      sendersName: Yup.string().required("Required")
+      .max(15, 'Must be 15 characters or less')
+      ,
       message: Yup.string().required("Required"),
     }),
     onSubmit: values => {
@@ -78,65 +79,17 @@ export default function CreateNew() {
 
  
 
-  const { loading, error, data } = useQuery(GETDATA)
   const [createLolly] = useMutation(createLollyMutation)
 
   return (
     <div>
-      <Header />
+      <Header mainHeadingText = "Kuch Meetha Hojaye?" secondaryHeadingText = "Add Some Toppings, Add Some Love..." />
 
       <div className="editorRoot">
-        <div className="LollyCreaterColorContainer">
-          <Lolly
-            style="lollipopEditor"
-            lollyTop={colorTop}
-            lollyBot={colorBot}
-            lollyMid={colorMid}
-          />
+       <LollyColorChanger/>
 
-          <div className="colorSelectorContainer">
-            <label htmlFor="topFlavor" className="colorPickerLabel">
-              <input
-                className="colorPicker"
-                value={colorTop}
-                type="color"
-                name="topFlavor"
-                id="topFlavor"
-                onChange={e => {
-                  setcolorTop(e.target.value)
-                }}
-              ></input>
-            </label>
 
-            <label htmlFor="midFlavor" className="colorPickerLabel">
-              <input
-                className="colorPicker"
-                value={colorMid}
-                type="color"
-                name="midFlavor"
-                id="midFlavor"
-                onChange={e => {
-                  setcolorMid(e.target.value)
-                }}
-              ></input>
-            </label>
-
-            <label htmlFor="botFlavor" className="colorPickerLabel">
-              <input
-                className="colorPicker"
-                value={colorBot}
-                type="color"
-                name="botFlavor"
-                id="botFlavor"
-                onChange={e => {
-                  setcolorBot(e.target.value)
-                }}
-              ></input>
-            </label>
-          </div>
-        </div>
-
-        <form  onSubmit={formik.handleSubmit} className="formContainer">
+        <form className="formContainer"  onSubmit={formik.handleSubmit} >
           <label className="formLabel" htmlFor="sendName">
             To:  
           </label>
@@ -194,6 +147,7 @@ export default function CreateNew() {
             type="submit"
           >Send</button>
         </form>
+
       </div>
     </div>
   )

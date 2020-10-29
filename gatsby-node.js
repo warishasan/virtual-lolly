@@ -16,7 +16,7 @@ exports.createPages = async ({ actions, graphql }) => {
   console.log(data)
   data.LOLLIES.getAllLollies.forEach(({ lollyPath }) => {
     actions.createPage({
-      path: `Lollies/${lollyPath}`,
+      path: `lollies/${lollyPath}`,
       component: path.resolve(`./src/components/dynamicLollyPage.tsx`),
       context: {
         lollyPath: lollyPath,
