@@ -226,3 +226,8 @@ body {
     margin-top: -2rem;
 
 }
+.pageNotFound{
+    font-size: 2rem;
+    text-align: center;
+    margin: 2rem auto;
+}

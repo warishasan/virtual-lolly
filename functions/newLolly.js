@@ -59,6 +59,7 @@ const resolvers = {
 
     getLollyByPath: async(_,args) => {
      
+    try{
       var result = await client.query(
        
         q.Get(
@@ -70,7 +71,12 @@ const resolvers = {
     
 
       return result.data
-      
+    }
+
+    catch(e){
+
+      return e.toString() 
+    }
     },
 
 
