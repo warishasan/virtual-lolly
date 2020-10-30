@@ -1,20 +1,18 @@
-const { ApolloServer, gql } = require('apollo-server-lambda')
+const { ApolloServer, gql } = require("apollo-server-lambda")
 
-const faunadb = require("faunadb");
-const axios = require('axios');
+const faunadb = require("faunadb")
+const axios = require("axios")
 
-const q = faunadb.query;
+const q = faunadb.query
 
 var client = new faunadb.Client({
   secret: "fnAD5MqQrdACB9dQ1KIGSHWDc6hdEVRDhV8St8ua",
 })
 
-
-
 const typeDefs = gql`
   type Query {
     getAllLollies: [Lolly]!
-    getLollyByPath (lollyPath: String!): Lolly
+    getLollyByPath(lollyPath: String!): Lolly
   }
   type Lolly {
     recipientName: String!
@@ -26,15 +24,22 @@ const typeDefs = gql`
     lollyPath: String!
   }
 
-  type Mutation{
-  createLolly(recipientName: String!,sendersName: String!,message: String!,flavorTop: String!,flavorMid: String!,flavorBot: String!, lollyPath: String!):Lolly
-}`
-
+  type Mutation {
+    createLolly(
+      recipientName: String!
+      sendersName: String!
+      message: String!
+      flavorTop: String!
+      flavorMid: String!
+      flavorBot: String!
+      lollyPath: String!
+    ): Lolly
+  }
+`
 
 const resolvers = {
   Query: {
-    getAllLollies: async() => {
-     
+    getAllLollies: async () => {
       var result = await client.query(
         q.Map(
           q.Paginate(q.Match(q.Index("allLollies"))),
@@ -43,69 +48,52 @@ const resolvers = {
       )
 
       return result.data.map(d => {
-        return ({
+        return {
           recipientName: d.data.recipientName,
           sendersName: d.data.sendersName,
           flavorTop: d.data.flavorTop,
           flavorMid: d.data.flavorMid,
           flavorBot: d.data.flavorBot,
           message: d.data.message,
-          lollyPath: d.data.lollyPath
-        })
+          lollyPath: d.data.lollyPath,
+        }
       })
-      
     },
 
-    getLollyByPath: async(_,args) => {
-     
-    try{
-      var result = await client.query(
-       
-        q.Get(
-          q.Match(q.Index('Lolly_by_path'), args.lollyPath)
+    getLollyByPath: async (_, args) => {
+      try {
+        var result = await client.query(
+          q.Get(q.Match(q.Index("Lolly_by_path"), args.lollyPath))
         )
-        
-      )
 
-    
-
-      return result.data
-    }
-
-    catch(e){
-
-      return e.toString() 
-    }
+        return result.data
+      } catch (e) {
+        return e.toString()
+      }
     },
-
-
-
   },
 
-  Mutation:{
-    
+  Mutation: {
     createLolly: async (root, args) => {
-
-
       const result = await client.query(
-        q.Create(q.Collection("Lollies"),{
-          data: args
+        q.Create(q.Collection("Lollies"), {
+          data: args,
         })
       )
 
-      axios.post('https://api.netlify.com/build_hooks/5f9b08201c44a833a923d4b4')
-      .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
-
+      axios
+        .post("https://api.netlify.com/build_hooks/5f9b08201c44a833a923d4b4")
+        .then(function (response) {
+          console.log(response)
+        })
+        .catch(function (error) {
+          console.error(error)
+        })
 
       console.log(result)
       return result.data
     },
-  }
+  },
 }
 
 const server = new ApolloServer({

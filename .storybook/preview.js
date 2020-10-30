@@ -3,7 +3,7 @@ import { action } from "@storybook/addon-actions"
 // Gatsby Link calls the `enqueue` & `hovering` methods on the global variable ___loader.
 // This global object isn't set in storybook context, requiring you to override it to empty functions (no-op),
 // so Gatsby Link doesn't throw any errors.
-import '../src/globalStyles/main.css'
+import "../src/globalStyles/main.css"
 global.___loader = {
   enqueue: () => {},
   hovering: () => {},

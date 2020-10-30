@@ -5,10 +5,7 @@ import { navigate } from "gatsby"
 import { useQuery, useMutation, gql } from "@apollo/client"
 import { useFormik } from "formik"
 import * as Yup from "yup"
-import LollyColorChanger from '../components/lollyColorChanger'
-import shortid from 'shortid'
-
-
+import shortid from "shortid"
 
 const createLollyMutation = gql`
   mutation createLolly(
@@ -40,7 +37,6 @@ export default function CreateNew() {
   const [colorBot, setcolorBot] = useState("#deaa10")
   const [colorMid, setcolorMid] = useState("#e95946")
 
-
   const formik = useFormik({
     initialValues: {
       recName: "",
@@ -48,64 +44,105 @@ export default function CreateNew() {
       message: "",
     },
     validationSchema: Yup.object({
-      recName: Yup.string().required("Required") 
-      .max(15, 'Must be 15 characters or less')
-      ,
-      sendersName: Yup.string().required("Required")
-      .max(15, 'Must be 15 characters or less')
-      ,
+      recName: Yup.string()
+        .required("Required")
+        .max(15, "Must be 15 characters or less"),
+      sendersName: Yup.string()
+        .required("Required")
+        .max(15, "Must be 15 characters or less"),
       message: Yup.string().required("Required"),
     }),
     onSubmit: values => {
-     //console.log(values)
+      const id = shortid.generate()
 
-     const id = shortid.generate();
+      const submitLollyForm = async () => {
+        const result = await createLolly({
+          variables: {
+            recipientName: values.recName,
+            sendersName: values.sendersName,
+            message: values.message,
+            flavorTop: colorTop,
+            flavorMid: colorMid,
+            flavorBot: colorBot,
+            lollyPath: id,
+          },
+        })
+      }
 
-     const submitLollyForm = async () => {
-      console.log("dpp")
+      submitLollyForm()
 
-      const result = await createLolly({
-        variables: {
-          recipientName: values.recName,
-          sendersName: values.sendersName,
-          message: values.message,
-          flavorTop: colorTop,
-          flavorMid: colorMid,
-          flavorBot: colorBot,
-          lollyPath: id
-        },
-      })
-  
-      console.log(result)
-    }
-
-    submitLollyForm();
-
-    
-    navigate(`/lollies/${id}`)
-    
+      navigate(`/lollies/${id}`)
     },
   })
-
- 
 
   const [createLolly] = useMutation(createLollyMutation)
 
   return (
     <div>
-      <Header mainHeadingText = "Kuch Meetha Hojaye?" secondaryHeadingText = "Add Some Toppings, Add Some Love..." />
+      <Header
+        mainHeadingText="Kuch Meetha Hojaye?"
+        secondaryHeadingText="Add Some Toppings, Add Some Love..."
+      />
 
       <div className="editorRoot">
-       <LollyColorChanger/>
+        <div className="LollyCreaterColorContainer">
+          <Lolly
+            style="lollipopEditor"
+            lollyTop={colorTop}
+            lollyBot={colorBot}
+            lollyMid={colorMid}
+          />
 
+          <div className="colorSelectorContainer">
+            <label htmlFor="topFlavor" className="colorPickerLabel">
+              <input
+                className="colorPicker"
+                value={colorTop}
+                type="color"
+                name="topFlavor"
+                id="topFlavor"
+                onChange={e => {
+                  setcolorTop(e.target.value)
+                }}
+              ></input>
+            </label>
 
-        <form className="formContainer"  onSubmit={formik.handleSubmit} >
+            <label htmlFor="midFlavor" className="colorPickerLabel">
+              <input
+                className="colorPicker"
+                value={colorMid}
+                type="color"
+                name="midFlavor"
+                id="midFlavor"
+                onChange={e => {
+                  setcolorMid(e.target.value)
+                }}
+              ></input>
+            </label>
+
+            <label htmlFor="botFlavor" className="colorPickerLabel">
+              <input
+                className="colorPicker"
+                value={colorBot}
+                type="color"
+                name="botFlavor"
+                id="botFlavor"
+                onChange={e => {
+                  setcolorBot(e.target.value)
+                }}
+              ></input>
+            </label>
+          </div>
+        </div>
+
+        <form className="formContainer" onSubmit={formik.handleSubmit}>
           <label className="formLabel" htmlFor="sendName">
-            To:  
+            To:
           </label>
-          <div className = "formErrors" >{formik.errors.recName && formik.touched.recName
-                        ? formik.errors.recName
-                        : null}
+          <div className="formErrors">
+            {formik.errors.recName && formik.touched.recName
+              ? formik.errors.recName
+              : null}
           </div>
           <input
             className="inputText"
@@ -114,20 +151,19 @@ export default function CreateNew() {
             id="recName"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            
           />
-        
 
           <label className="formLabel" htmlFor="msg">
             Message:{" "}
           </label>
-          <div className = "formErrors">{formik.errors.message && formik.touched.message
-                        ? formik.errors.message
-                        : null}
+          <div className="formErrors">
+            {formik.errors.message && formik.touched.message
+              ? formik.errors.message
+              : null}
           </div>
           <textarea
-            id = "message"
-            name = "message"
+            id="message"
+            name="message"
             onBlur={formik.handleBlur}
             onChange={formik.handleChange}
             className="inputTextBox"
@@ -139,9 +175,10 @@ export default function CreateNew() {
             {" "}
             From:{" "}
           </label>
-          <div className = "formErrors">{formik.errors.sendersName && formik.touched.sendersName
-                        ? formik.errors.sendersName
-                        : null}
+          <div className="formErrors">
+            {formik.errors.sendersName && formik.touched.sendersName
+              ? formik.errors.sendersName
+              : null}
           </div>
           <input
             onBlur={formik.handleBlur}
@@ -151,13 +188,11 @@ export default function CreateNew() {
             name="sendersName"
             id="sendersName"
           />
-      
-          <button
-            className="submitButton"
-            type="submit"
-          >Send</button>
-        </form>
 
+          <button className="submitButton" type="submit">
+            Send
+          </button>
+        </form>
       </div>
     </div>
   )
