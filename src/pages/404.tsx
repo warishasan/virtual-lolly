@@ -35,12 +35,16 @@ export default function NotFound({ location }) {
     console.log(location)
     console.log("HRE",location.href)
     console.log("GGG", location.pathname)
+    console.log(loading)
 
     console.log(data);
     console.log(error)
   return <div>
 
-{!!data && queryLollies === "/lollies/" ? 
+
+{loading? <div className = "loading">Loading...</div>:
+
+!!data && queryLollies === "/lollies/" ? 
 <div>
 
 <Header mainHeadingText = "Kuch Meetha Hojaye?" secondaryHeadingText = "You recieved a lolly, dont eat it alone !" />
@@ -63,6 +67,7 @@ export default function NotFound({ location }) {
   
 404. Page not found.  
   
-</div>}
+</div>
+}
   </div>
 }
