@@ -24,8 +24,13 @@ query getLollies($lollyPath:String!) {
 
 export default function NotFound({ location }) {
 
+  var queryLollies = location.pathname.slice(0, 9);
+  var queryPath = location.pathname.slice(9)
+  console.log(queryPath)
+
+
   const { loading, error, data } = useQuery(GET_LOLLY_BY_PATH, {
-    variables: { lollyPath: location.href },
+    variables: { lollyPath: queryPath },
   });
     console.log(location)
     console.log("HRE",location.href)
@@ -35,7 +40,7 @@ export default function NotFound({ location }) {
     console.log(error)
   return <div>
 
-{!!data ? 
+{!!data && queryLollies === "/lollies/" ? 
 <div>
 
 <Header mainHeadingText = "Kuch Meetha Hojaye?" secondaryHeadingText = "You recieved a lolly, dont eat it alone !" />

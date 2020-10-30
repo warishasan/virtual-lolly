@@ -1,7 +1,6 @@
 const { ApolloServer, gql } = require('apollo-server-lambda')
 
 const faunadb = require("faunadb");
-const shortid = require("shortid");
 const axios = require('axios');
 
 const q = faunadb.query;
@@ -86,8 +85,7 @@ const resolvers = {
   Mutation:{
     
     createLolly: async (root, args) => {
-      const id = shortid.generate();
-      args.lollyPath = id;
+
 
       const result = await client.query(
         q.Create(q.Collection("Lollies"),{

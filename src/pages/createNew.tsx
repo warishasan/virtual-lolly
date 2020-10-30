@@ -6,6 +6,8 @@ import { useQuery, useMutation, gql } from "@apollo/client"
 import { useFormik } from "formik"
 import * as Yup from "yup"
 import LollyColorChanger from '../components/lollyColorChanger'
+import shortid from 'shortid'
+
 
 
 const createLollyMutation = gql`
@@ -55,9 +57,11 @@ export default function CreateNew() {
     onSubmit: values => {
      //console.log(values)
 
+     const id = shortid.generate();
+
      const submitLollyForm = async () => {
       console.log("dpp")
-  
+
       const result = await createLolly({
         variables: {
           recipientName: values.recName,
@@ -66,6 +70,7 @@ export default function CreateNew() {
           flavorTop: colorTop,
           flavorMid: colorMid,
           flavorBot: colorBot,
+          lollyPath: id
         },
       })
   
@@ -73,6 +78,9 @@ export default function CreateNew() {
     }
 
     submitLollyForm();
+
+    
+    navigate(`/lollies/${id}`)
     
     },
   })
