@@ -18,6 +18,7 @@ const createLollyMutation = gql`
     $flavorTop: String!
     $flavorMid: String!
     $flavorBot: String!
+    $lollyPath: String!
   ) {
     createLolly(
       recipientName: $recipientName
@@ -26,6 +27,7 @@ const createLollyMutation = gql`
       flavorTop: $flavorTop
       flavorMid: $flavorMid
       flavorBot: $flavorBot
+      lollyPath: $lollyPath
     ) {
       message
       lollyPath

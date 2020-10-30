@@ -27,7 +27,7 @@ const typeDefs = gql`
   }
 
   type Mutation{
-  createLolly(recipientName: String!,sendersName: String!,message: String!,flavorTop: String!,flavorMid: String!,flavorBot: String!):Lolly
+  createLolly(recipientName: String!,sendersName: String!,message: String!,flavorTop: String!,flavorMid: String!,flavorBot: String!, lollyPath: String!):Lolly
 }`
 
 
